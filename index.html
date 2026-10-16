@@ -186,8 +186,44 @@ function adjacentIds(id){const row=Math.floor(id/4),col=id%4;const out=[];if(col
 function rivalInvasion(){const threatened=state.territories.filter(t=>t.owner==="player"&&t.id!==0&&adjacentIds(t.id).some(id=>state.territories[id]&&state.territories[id].owner==="rival"));if(!threatened.length)return;const target=threatened[Math.floor(Math.random()*threatened.length)];const enemies=adjacentIds(target.id).map(id=>state.territories[id]).filter(t=>t&&t.owner==="rival"&&!((state.treaties||{})[t.ruler]&&(state.treaties||{})[t.ruler].until>=state.day));const attacker=enemies.sort((a,b)=>b.power-a.power)[0];if(!attacker)return;const attack=attacker.power+Math.floor(state.day/4);const defence=8+(target.castleLevel||0)*8+(target.id===0?state.fort*5:0);if(defence>=attack){state.gold=Math.max(0,state.gold-35);log((attacker.ruler||"A rival lord")+" raided "+target.name+", but its defences held. Repairs cost 35 gold.");}else{target.owner="rival";target.ruler=attacker.ruler||"A rival lord";target.power=Math.max(8,Math.floor(attack/2));target.castleLevel=0;log((attacker.ruler||"A rival lord")+" invaded and seized "+target.name+"! Retake it before the rival grows stronger.");notify("⚠ "+target.name+" has fallen to a rival invasion!");}}
 function offerTruce(ruler){if(!ruler)return;if(state.gold<150){notify("You need 150 gold to offer a truce.");return}state.gold-=150;state.treaties=state.treaties||{};state.treaties[ruler]={type:"truce",until:state.day+3};log(ruler+" accepted a three-day truce after receiving 150 gold.");render();saveGame(true);notify("Truce agreed with "+ruler+" for three days.")}
 function offerAlliance(ruler){if(!ruler)return;if(state.gold<300){notify("You need 300 gold to propose an alliance.");return}state.gold-=300;state.treaties=state.treaties||{};state.treaties[ruler]={type:"alliance",until:state.day+5};log(ruler+" agreed to a five-day non-aggression alliance for 300 gold.");render();saveGame(true);notify("Alliance with "+ruler+" lasts five days.")}
-function rivalExpansion(){const rulers=[...new Set(state.territories.filter(t=>t.owner==="rival").map(t=>t.ruler||"House Thorn"))];for(const ruler of rulers){const holdings=state.territories.filter(t=>t.owner==="rival"&&t.ruler===ruler);if(!holdings.length)continue;const tr=(state.treaties||{})[ruler];if(tr&&tr.until>=state.day)continue;const options=[...new Set(holdings.flatMap(t=>adjacentIds(t.id)))].map(id=>state.territories[id]).filter(t=>t&&t.owner==="neutral");if(!options.length)continue;options.sort((a,b)=>a.power-b.power);const target=options[0];if(Math.random()<.45){target.owner="rival";target.ruler=ruler;target.power=Math.max(5,Math.floor(target.power*.75));log(ruler+" expanded into "+target.name+". Rival kingdoms are claiming unguarded frontier lands.");}}}
-function nextDay(){playSfx("day");state.day++;const g=income();const f=foodIncome();const upkeep=Math.ceil(totalArmy()*1.25);state.gold+=g;state.food+=f-upkeep;if(state.food<0){state.food=0;const lost=Math.min(state.footmen,Math.ceil(totalArmy()*.08));state.footmen-=lost;log("Food stores ran dry. "+lost+" footmen deserted.");}if(state.day%4===0){rivalInvasion()}if(state.day%5===0){const rivals=state.territories.filter(t=>t.owner==="rival");if(rivals.length){const t=rivals[Math.floor(Math.random()*rivals.length)];t.power=Math.min(35,t.power+1);log((t.ruler||"Rival forces")+" gathered reinforcements near "+t.name+".");}rivalExpansion();}log("Day "+state.day+": collected "+g+" gold and "+f+" food before army upkeep.");render();saveGame(true);notify("Day "+state.day+" begins. Income collected.")}
+function rivalExpansion(){
+ const rulers=[...new Set(state.territories.filter(t=>t.owner==="rival").map(t=>t.ruler||"House Thorn"))];
+ for(const ruler of rulers){
+  const holdings=state.territories.filter(t=>t.owner==="rival"&&t.ruler===ruler);
+  if(!holdings.length)continue;
+  const tr=(state.treaties||{})[ruler];if(tr&&tr.until>=state.day)continue;
+  const options=[...new Set(holdings.flatMap(t=>adjacentIds(t.id)))].map(id=>state.territories[id]).filter(t=>t&&t.owner==="neutral");
+  if(options.length){options.sort((a,b)=>a.power-b.power);const target=options[0];if(Math.random()<.38){target.owner="rival";target.ruler=ruler;target.power=Math.max(5,Math.floor(target.power*.75));log(ruler+" claimed "+target.name+" after a frontier skirmish.");}}
+ }
+}
+function rivalKingdomWars(){
+ // Rival houses can now fight for territory, not just expand into empty land.
+ const houses=[...new Set(state.territories.filter(t=>t.owner==="rival").map(t=>t.ruler||"House Thorn"))];
+ if(houses.length<2)return;
+ const fronts=[];
+ for(const a of state.territories.filter(t=>t.owner==="rival")){
+  for(const id of adjacentIds(a.id)){const b=state.territories[id];if(b&&b.owner==="rival"&&(b.ruler||"House Thorn")!==(a.ruler||"House Thorn"))fronts.push({a,b});}
+ }
+ if(!fronts.length)return;
+ // Resolve one border clash per campaign turn; avoid repeatedly resolving the same pair.
+ const front=fronts[Math.floor(Math.random()*fronts.length)],a=front.a,b=front.b;
+ const rulerA=a.ruler||"House Thorn",rulerB=b.ruler||"House Thorn";
+ const trA=(state.treaties||{})[rulerA],trB=(state.treaties||{})[rulerB];
+ if((trA&&trA.until>=state.day)||(trB&&trB.until>=state.day))return;
+ const powerA=Math.max(1,a.power+Math.floor(state.day/5)+(a.castleLevel||0)*4);
+ const powerB=Math.max(1,b.power+Math.floor(state.day/5)+(b.castleLevel||0)*4);
+ const scoreA=powerA*(.75+Math.random()*.5),scoreB=powerB*(.75+Math.random()*.5);
+ const winner=scoreA>=scoreB?a:b,loser=winner===a?b:a;
+ loser.power=Math.max(3,Math.floor(loser.power*.72));
+ winner.power=Math.max(4,Math.floor(winner.power*.92));
+ if(loser.power<=5&&Math.random()<.42){
+  loser.ruler=winner.ruler;loser.power=Math.max(6,Math.floor(winner.power*.45));loser.castleLevel=Math.max(0,(loser.castleLevel||0)-1);
+  log(winner.ruler+" defeated "+rulerB+" at "+loser.name+" and seized the territory. Rival borders are shifting.");
+ }else{
+  log(winner.ruler+" won a border battle against "+loser.ruler+" near "+loser.name+". Both houses suffered losses.");
+ }
+}
+function nextDay(){playSfx("day");state.day++;const g=income();const f=foodIncome();const upkeep=Math.ceil(totalArmy()*1.25);state.gold+=g;state.food+=f-upkeep;if(state.food<0){state.food=0;const lost=Math.min(state.footmen,Math.ceil(totalArmy()*.08));state.footmen-=lost;log("Food stores ran dry. "+lost+" footmen deserted.");}if(state.day%4===0){rivalInvasion()}if(state.day%3===0){rivalKingdomWars()}if(state.day%5===0){const rivals=state.territories.filter(t=>t.owner==="rival");if(rivals.length){const t=rivals[Math.floor(Math.random()*rivals.length)];t.power=Math.min(35,t.power+2);log((t.ruler||"Rival forces")+" recruited reinforcements near "+t.name+".");}rivalExpansion();}log("Day "+state.day+": collected "+g+" gold and "+f+" food before army upkeep.");render();saveGame(true);notify("Day "+state.day+" begins. Income collected.")}
 function saveGame(silent){try{state.spearmen=state.spearmen||0;state.knights=state.knights||0;state.siege=state.siege||0;state.lords=state.lords||0;state.quests=state.quests||{scout:false,capture:false,recruit:false};localStorage.setItem("frontierEmpiresSave",JSON.stringify(state));if(!silent)notify("Campaign saved on this device.");}catch(e){if(!silent)notify("Save unavailable in this browser mode.");}}
 function loadGame(){try{const data=localStorage.getItem("frontierEmpiresSave");if(!data){notify("No saved campaign found.");return}const parsed=JSON.parse(data);if(!parsed.territories||parsed.territories.length!==12)throw new Error("invalid save");state=parsed;state.sieges=state.sieges||{};state.treaties=state.treaties||{};state.taxPolicy=state.taxPolicy||"balanced";state.spearmen=state.spearmen||0;state.knights=state.knights||0;state.siege=state.siege||0;state.lords=state.lords||0;state.quests=state.quests||{scout:false,capture:false,recruit:false};state.territories.forEach(t=>{t.castleLevel=t.castleLevel||0;t.ruler=t.ruler||(t.owner==="player"?"Your Crown":t.owner==="rival"?"House Thorn":"Free villages")});render();notify("Campaign loaded.");}catch(e){notify("Could not load the saved campaign.");}}
 function resetGame(){if(!confirm("Start a new campaign? Your current in-browser save will be replaced."))return;state=initialState();log("A new campaign began at Oakwatch.");render();saveGame(true);notify("A new frontier awaits.")}
