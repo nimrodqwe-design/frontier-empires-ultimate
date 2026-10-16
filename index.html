@@ -50,7 +50,7 @@
 .welcome-guide{margin:0 0 14px;padding:18px 20px;border-color:#8c7445;background:linear-gradient(135deg,rgba(79,67,38,.45),rgba(22,31,25,.98));}
 .welcome-guide[hidden]{display:none}.welcome-copy{max-width:780px}.welcome-copy h2{font:700 clamp(20px,3vw,27px)/1.2 Georgia,serif;margin:5px 0 8px;color:#f3d89b}.welcome-copy p{color:var(--muted);margin:6px 0 12px}.welcome-steps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px 22px;padding-left:22px;margin:12px 0 16px}.welcome-steps li{padding-left:3px}.welcome-steps b{color:var(--text)}.welcome-actions{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:8px}@media(max-width:600px){.welcome-steps{grid-template-columns:1fr}.welcome-guide{padding:15px}}
 
-.rival-report-overlay{position:fixed;inset:0;z-index:120;background:rgba(4,8,5,.88);display:grid;place-items:center;padding:16px;backdrop-filter:blur(5px)}.rival-report-overlay[hidden]{display:none}.rival-report-card{width:min(570px,100%);background:linear-gradient(150deg,#29382a,#111913);border:1px solid #80683d;border-radius:18px;padding:22px;box-shadow:0 24px 90px #000a}.rival-report-kicker{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold)}.rival-report-card h2{font:700 26px Georgia,serif;margin:7px 0}.rival-report-card>p{color:var(--muted)}.rival-report-field{position:relative;display:grid;grid-template-columns:1fr 56px 1fr;align-items:center;gap:8px;min-height:160px;margin:16px 0;padding:18px 10px;border:1px solid #465341;border-radius:12px;overflow:hidden;background:radial-gradient(ellipse at center,#46533b,#1a271e 68%)}.rival-report-banner{display:flex;align-items:center;flex-direction:column;gap:6px;text-align:center;min-width:0}.rival-report-banner span{font-size:34px}.rival-report-banner strong{font-size:13px;overflow-wrap:anywhere}.rival-report-banner small{font-size:11px;color:var(--muted)}.rival-report-banner.enemy{color:#e5b0a0}.rival-report-clash{text-align:center;font-size:30px;animation:rivalClash .8s ease-in-out infinite alternate}.rival-report-flash{position:absolute;left:0;right:0;top:50%;text-align:center;font-size:12px;font-weight:900;letter-spacing:2px;color:#f5d38b;text-shadow:0 2px 8px #000;opacity:0;pointer-events:none}.rival-report-field.fighting .rival-report-flash{animation:rivalFlash 1.5s ease-in-out infinite}.rival-report-field.fighting .rival-report-banner:first-child{animation:rivalAdvance .8s ease-in-out infinite alternate}.rival-report-field.fighting .rival-report-banner.enemy{animation:rivalAdvanceBack .8s ease-in-out infinite alternate}.rival-report-status{padding:11px;border-radius:8px;background:#101811;color:#e7d6ad;text-align:center;font-size:13px}.rival-report-result{min-height:24px;text-align:center;font-weight:700;color:#f2d89b}.rival-report-card button{margin-top:8px}@keyframes rivalClash{from{transform:scale(.9) rotate(-10deg)}to{transform:scale(1.18) rotate(10deg)}}@keyframes rivalFlash{0%,100%{opacity:0}35%,65%{opacity:1}}@keyframes rivalAdvance{to{transform:translateX(10px)}}@keyframes rivalAdvanceBack{to{transform:translateX(-10px)}}@media(prefers-reduced-motion:reduce){.rival-report-clash,.rival-report-field.fighting .rival-report-flash,.rival-report-field.fighting .rival-report-banner{animation:none}}
+.rival-report-overlay{position:fixed;inset:0;z-index:120;background:rgba(4,8,5,.88);display:grid;place-items:center;padding:16px;backdrop-filter:blur(5px)}.rival-report-overlay[hidden]{display:none}.rival-report-card{width:min(570px,100%);background:linear-gradient(150deg,#29382a,#111913);border:1px solid #80683d;border-radius:18px;padding:22px;box-shadow:0 24px 90px #000a}.rival-report-kicker{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold)}.rival-report-card h2{font:700 26px Georgia,serif;margin:7px 0}.rival-report-card>p{color:var(--muted)}.rival-report-field{position:relative;display:grid;grid-template-columns:1fr 56px 1fr;align-items:center;gap:8px;min-height:160px;margin:16px 0;padding:18px 10px;border:1px solid #465341;border-radius:12px;overflow:hidden;background:radial-gradient(ellipse at center,#46533b,#1a271e 68%)}.rival-report-banner{display:flex;align-items:center;flex-direction:column;gap:6px;text-align:center;min-width:0}.rival-report-banner span{font-size:34px}.rival-report-banner strong{font-size:13px;overflow-wrap:anywhere}.rival-report-banner small{font-size:11px;color:var(--muted)}.rival-report-banner.enemy{color:#e5b0a0}.rival-report-clash{text-align:center;font-size:30px;animation:rivalClash .8s ease-in-out infinite alternate}.rival-report-flash{position:absolute;left:0;right:0;top:50%;text-align:center;font-size:12px;font-weight:900;letter-spacing:2px;color:#f5d38b;text-shadow:0 2px 8px #000;opacity:0;pointer-events:none}.rival-report-field.fighting .rival-report-flash{animation:rivalFlash 1.5s ease-in-out infinite}.rival-report-field.fighting .rival-report-banner:first-child{animation:rivalAdvance .8s ease-in-out infinite alternate}.rival-report-field.fighting .rival-report-banner.enemy{animation:rivalAdvanceBack .8s ease-in-out infinite alternate}.rival-report-status{padding:11px;border-radius:8px;background:#101811;color:#e7d6ad;text-align:center;font-size:13px}.rival-report-details{padding:8px 10px;margin:8px 0;border:1px solid #3e4b3a;border-radius:8px;color:#c5d1bd;font-size:12px;line-height:1.5;text-align:center}.rival-report-result{min-height:24px;text-align:center;font-weight:700;color:#f2d89b}.rival-report-card button{margin-top:8px}@keyframes rivalClash{from{transform:scale(.9) rotate(-10deg)}to{transform:scale(1.18) rotate(10deg)}}@keyframes rivalFlash{0%,100%{opacity:0}35%,65%{opacity:1}}@keyframes rivalAdvance{to{transform:translateX(10px)}}@keyframes rivalAdvanceBack{to{transform:translateX(-10px)}}@media(prefers-reduced-motion:reduce){.rival-report-clash,.rival-report-field.fighting .rival-report-flash,.rival-report-field.fighting .rival-report-banner{animation:none}}
 </style>
 </head>
 <body>
@@ -77,7 +77,7 @@
 <div class="footer">FRONTIER EMPIRES · Prototype build 0.2 · Your kingdom, your choices</div>
 </div>
 <nav class="bottom-nav"><button class="active" onclick="jumpTo('worldPanel',this)"><span>🗺️</span>World</button><button onclick="jumpTo('armyPanel',this)"><span>🛡️</span>Army</button><button onclick="jumpTo('councilPanel',this)"><span>👑</span>Council</button></nav><div class="battle-overlay" id="battleOverlay" role="dialog" aria-modal="true" aria-labelledby="battleTitle"><div class="battle-card"><div class="battle-heading"><div class="battle-kicker">⚔ Tactical encounter</div><h2 id="battleTitle">Battle for the frontier</h2><p id="battleSubtitle">Choose how your troops fight.</p></div><div class="battlefield" id="battlefield"><canvas id="battleCanvas" aria-label="Animated 2D battlefield"></canvas><div class="battle-sun"></div><div class="battle-fort" id="battleFort">🏰</div><div class="battle-side friendly" id="friendlyUnits" aria-hidden="true"></div><div class="battle-clash" id="battleClash">⚡</div><div class="battle-side enemy" id="enemyUnits" aria-hidden="true"></div><div class="battle-ground-label friendly-label">YOUR ARMY</div><div class="battle-ground-label enemy-label">DEFENDERS</div></div><div class="battle-bars"><div class="battle-bar-block"><div class="battle-bar-label"><span>🛡 Your troops</span><b id="playerHpText">24 / 24</b></div><div class="battle-hp"><span id="playerHpBar"></span></div></div><div class="battle-bar-block"><div class="battle-bar-label"><span>🏰 Enemy force</span><b id="enemyHpText">13 / 13</b></div><div class="battle-hp enemy-hp"><span id="enemyHpBar"></span></div></div></div><div class="battle-status"><strong id="battleStatus">Awaiting your command</strong><p id="battleTip">Your tactical choice changes damage and defence.</p></div><div class="battle-actions" id="battleActions"><button class="battle-action charge-action" onclick="battleTurn('charge')">⚔️ Charge <small>Heavy damage · heavy risk</small></button><button class="battle-action volley-action" onclick="battleTurn('volley')">🏹 Archer volley <small>Rangers deal extra damage</small></button><button class="battle-action guard-action" onclick="battleTurn('guard')">🛡️ Hold formation <small>Reduce incoming damage</small></button></div><div class="battle-footer"><span id="battleRound">ROUND 1</span><button class="btn" id="battleReturn" onclick="closeBattle()" hidden>Return to campaign</button></div></div></div>
-<div class="rival-report-overlay" id="rivalBattleReport" role="dialog" aria-modal="true" aria-labelledby="rivalReportTitle" hidden><section class="rival-report-card"><div class="rival-report-kicker">⚔ Frontier dispatch · Rival war</div><h2 id="rivalReportTitle">Battle on the frontier</h2><p id="rivalReportSubtitle">Rival houses clash over disputed land.</p><div class="rival-report-field"><div class="rival-report-banner"><span id="rivalReportLeftIcon">🛡️</span><strong id="rivalReportLeft">House Thorn</strong><small id="rivalReportLeftPower">Strength 10</small></div><div class="rival-report-clash" id="rivalReportClash">⚔️</div><div class="rival-report-banner enemy"><span id="rivalReportRightIcon">🏰</span><strong id="rivalReportRight">House Frost</strong><small id="rivalReportRightPower">Strength 10</small></div><div class="rival-report-flash" id="rivalReportFlash">⚡ CLASH ⚡</div></div><div class="rival-report-status" id="rivalReportStatus">Scouts report armies advancing.</div><p class="rival-report-result" id="rivalReportResult"></p><button class="btn primary full" id="rivalReportClose" onclick="closeRivalBattleReport()">Return to campaign</button></section></div>
+<div class="rival-report-overlay" id="rivalBattleReport" role="dialog" aria-modal="true" aria-labelledby="rivalReportTitle" hidden><section class="rival-report-card"><div class="rival-report-kicker">⚔ Frontier dispatch · Rival war</div><h2 id="rivalReportTitle">Battle on the frontier</h2><p id="rivalReportSubtitle">Rival houses clash over disputed land.</p><div class="rival-report-field"><div class="rival-report-banner"><span id="rivalReportLeftIcon">🛡️</span><strong id="rivalReportLeft">House Thorn</strong><small id="rivalReportLeftPower">Strength 10</small></div><div class="rival-report-clash" id="rivalReportClash">⚔️</div><div class="rival-report-banner enemy"><span id="rivalReportRightIcon">🏰</span><strong id="rivalReportRight">House Frost</strong><small id="rivalReportRightPower">Strength 10</small></div><div class="rival-report-flash" id="rivalReportFlash">⚡ CLASH ⚡</div></div><div class="rival-report-status" id="rivalReportStatus">Scouts report armies advancing.</div><p class="rival-report-details" id="rivalReportDetails">Terrain and tactics influence the result.</p><p class="rival-report-result" id="rivalReportResult"></p><button class="btn primary full" id="rivalReportClose" onclick="closeRivalBattleReport()">Return to campaign</button></section></div>
 <div class="toast" id="toast" role="status"></div>
 <script>
 /* Lightweight original audio: no downloads, external tracks, or copyrighted samples. */
@@ -223,22 +223,31 @@ function rivalKingdomWars(){
    const b=state.territories[id];if(!b||b.owner!=="rival"||(b.ruler||"House Thorn")===rulerA)continue;
    const rulerB=b.ruler||"House Thorn",trB=(state.treaties||{})[rulerB];if(trB&&trB.until>=state.day)continue;
    const holdingsA=state.territories.filter(t=>t.owner==="rival"&&(t.ruler||"House Thorn")===rulerA);
+   const terrain=b.kind||"Open ground";
+   const terrainDefence=({Highlands:1.18,Mountain:1.25,Marsh:1.15,Forest:1.08,Crossing:1.12})[terrain]||1;
    const attack=Math.max(1,a.power+Math.floor(state.day/5)+(a.castleLevel||0)*2);
-   const defence=Math.max(1,b.power+(b.castleLevel||0)*7+3);
+   const defence=Math.max(1,(b.power+(b.castleLevel||0)*7+3)*terrainDefence);
    const value=rivalTargetValue(b,holdingsA),advantage=attack/defence;
-   if(advantage>=.72)candidates.push({a,b,rulerA,rulerB,attack,defence,value,score:value+Math.min(30,(advantage-1)*35)});
+   if(advantage>=.72)candidates.push({a,b,rulerA,rulerB,attack,defence,value,terrain,score:value+Math.min(30,(advantage-1)*35)});
   }
  }
  if(!candidates.length)return;
  candidates.sort((a,b)=>b.score-a.score);
  const front=candidates[Math.floor(Math.random()*Math.min(3,candidates.length))];
- const {a,b,rulerA,rulerB,attack,defence}=front;
- const scoreA=attack*(.82+Math.random()*.36),scoreB=defence*(.82+Math.random()*.36);
- const winner=scoreA>=scoreB?a:b,loser=winner===a?b:a;
+ const {a,b,rulerA,rulerB,attack,defence,terrain}=front;
+ // Lightweight round-based resolution; troop mix is estimated from each territory's power.
+ const composition=p=>({footmen:Math.round(p*.58),rangers:Math.round(p*.22),cavalry:Math.max(0,Math.round(p*.12)),spearmen:Math.max(0,Math.round(p*.08))});
+ const troopsA=composition(a.power),troopsB=composition(b.power);
+ const tacticA=troopsA.cavalry>=Math.max(2,troopsA.rangers)?"Cavalry charge":troopsA.rangers>=3?"Archer volley":"Shield advance";
+ const tacticB=troopsB.cavalry>=Math.max(2,troopsB.rangers)?"Cavalry charge":troopsB.rangers>=3?"Archer volley":"Hold formation";
+ const tacticBonus=t=>t==="Cavalry charge"?(terrain==="Farmland"||terrain==="Valley"?1.12:terrain==="Forest"||terrain==="Marsh"?.88:1.04):t==="Archer volley"?(terrain==="Highlands"||terrain==="Mountain"?1.12:1.03):1.02;
+ const scoreA=attack*tacticBonus(tacticA)*(.9+Math.random()*.2),scoreB=defence*tacticBonus(tacticB)*(.9+Math.random()*.2);
+ const rounds=2+Math.floor(Math.random()*3),winner=scoreA>=scoreB?a:b,loser=winner===a?b:a;
  const winnerRuler=winner===a?rulerA:rulerB,loserRuler=loser===a?rulerA:rulerB;
  const beforeA=a.power,beforeB=b.power;
- loser.power=Math.max(3,Math.floor(loser.power*(winner===a?.68:.78)));
- winner.power=Math.max(4,Math.floor(winner.power*.9));
+ const lossA=Math.max(1,Math.round(a.power*(scoreB>scoreA?.22:.12)*(0.8+Math.random()*.4)));
+ const lossB=Math.max(1,Math.round(b.power*(scoreA>=scoreB?.22:.12)*(0.8+Math.random()*.4)));
+ a.power=Math.max(3,a.power-lossA);b.power=Math.max(3,b.power-lossB);
  let captured=false;
  if(loser.power<=7&&Math.random()<(winner===a?.48:.28)){
   loser.ruler=winnerRuler;loser.power=Math.max(6,Math.floor(winner.power*.42));loser.castleLevel=Math.max(0,(loser.castleLevel||0)-1);captured=true;
@@ -246,8 +255,7 @@ function rivalKingdomWars(){
  }else{
   log(winnerRuler+" defeated "+loserRuler+" near "+loser.name+". Both houses lost strength.");
  }
- // The spectator report presents the same calculated outcome recorded in the chronicle.
- showRivalBattleReport({attacker:rulerA,defender:rulerB,location:b.name,attack,defence,scoreA,scoreB,winner:winnerRuler,loser:loserRuler,captured,territory:loser.name,powerA:beforeA,powerB:beforeB});
+ showRivalBattleReport({attacker:rulerA,defender:rulerB,location:b.name,attack,defence,scoreA,scoreB,winner:winnerRuler,loser:loserRuler,captured,territory:loser.name,powerA:beforeA,powerB:beforeB,lossA,lossB,rounds,terrain,tacticA,tacticB});
 }
 let rivalReportTimer=null;
 function showRivalBattleReport(b){
@@ -256,8 +264,9 @@ function showRivalBattleReport(b){
  $("rivalReportTitle").textContent="Battle near "+b.location;
  $("rivalReportSubtitle").textContent=b.attacker+" challenged "+b.defender+" for control of the frontier.";
  $("rivalReportLeft").textContent=b.attacker;$("rivalReportRight").textContent=b.defender;
- $("rivalReportLeftPower").textContent="Field strength "+Math.round(b.attack);
- $("rivalReportRightPower").textContent="Defence strength "+Math.round(b.defence);
+ $("rivalReportLeftPower").textContent="Field strength "+Math.round(b.attack)+(b.lossA!=null?" · estimated losses "+b.lossA:"");
+ $("rivalReportRightPower").textContent="Defence strength "+Math.round(b.defence)+(b.lossB!=null?" · estimated losses "+b.lossB:"");
+ if($("rivalReportDetails"))$("rivalReportDetails").textContent=b.terrain?"Terrain: "+b.terrain+" · "+b.rounds+" simulated rounds. "+b.attacker+": "+b.tacticA+". "+b.defender+": "+b.tacticB+".":"Terrain and tactics influence the result.";
  $("rivalReportLeftIcon").textContent="⚔️";$("rivalReportRightIcon").textContent="🛡️";
  $("rivalReportStatus").textContent="Armies advance. Commanders commit their forces...";
  $("rivalReportResult").textContent="";
@@ -268,7 +277,7 @@ function showRivalBattleReport(b){
  rivalReportTimer=setTimeout(()=>{
   field.classList.remove("fighting");
   $("rivalReportClash").textContent=b.winner===b.attacker?"🏆":"🛡️";
-  $("rivalReportStatus").textContent=b.winner+" wins the clash. "+b.loser+" forces are weakened.";
+  $("rivalReportStatus").textContent=b.winner+" wins after "+(b.rounds||"several")+" rounds. Both sides suffer losses; terrain and tactics influence the result.";
   $("rivalReportResult").textContent=b.captured?b.winner+" captures "+b.territory+"!":b.territory+" remains under "+(b.captured?b.winner:b.loser)+".";
   $("rivalReportClose").disabled=false;$("rivalReportClose").textContent="Return to campaign";rivalReportTimer=null;
  },1800);
