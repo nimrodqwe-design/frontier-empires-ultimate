@@ -80,6 +80,29 @@
 <div class="rival-report-overlay" id="rivalBattleReport" role="dialog" aria-modal="true" aria-labelledby="rivalReportTitle" hidden><section class="rival-report-card"><div class="rival-report-kicker">⚔ Frontier dispatch · Rival war</div><h2 id="rivalReportTitle">Battle on the frontier</h2><p id="rivalReportSubtitle">Rival houses clash over disputed land.</p><div class="rival-report-field"><div class="rival-report-banner"><span id="rivalReportLeftIcon">🛡️</span><strong id="rivalReportLeft">House Thorn</strong><small id="rivalReportLeftPower">Strength 10</small></div><div class="rival-report-clash" id="rivalReportClash">⚔️</div><div class="rival-report-banner enemy"><span id="rivalReportRightIcon">🏰</span><strong id="rivalReportRight">House Frost</strong><small id="rivalReportRightPower">Strength 10</small></div><div class="rival-report-flash" id="rivalReportFlash">⚡ CLASH ⚡</div></div><div class="rival-report-status" id="rivalReportStatus">Scouts report armies advancing.</div><p class="rival-report-details" id="rivalReportDetails">Terrain and tactics influence the result.</p><p class="rival-report-result" id="rivalReportResult"></p><button class="btn primary full" id="rivalReportClose" onclick="closeRivalBattleReport()">Return to campaign</button></section></div>
 <div class="toast" id="toast" role="status"></div>
 <script>
+/* Startup diagnostics: surface fatal errors instead of leaving a silent blank screen. */
+(function installStartupDiagnostics(){
+  function showFatal(message){
+    try{
+      let panel=document.getElementById("frontierFatalError");
+      if(!panel){
+        panel=document.createElement("div");
+        panel.id="frontierFatalError";
+        panel.setAttribute("role","alert");
+        panel.style.cssText="position:fixed;z-index:99999;inset:12px 12px auto;padding:14px 16px;background:#241719;color:#ffe7e7;border:1px solid #b85a5a;border-radius:10px;box-shadow:0 8px 30px #0009;font:14px/1.45 system-ui,sans-serif;white-space:pre-wrap;overflow-wrap:anywhere";
+        document.body.appendChild(panel);
+      }
+      panel.textContent="Frontier Empires hit an error. Refresh the page to try again. If it keeps happening, send this message to the developer:\\n"+String(message||"Unknown JavaScript error").slice(0,500);
+    }catch(_){}
+  }
+  window.addEventListener("error",function(event){
+    showFatal(event.message||"A script failed to load or run.");
+  });
+  window.addEventListener("unhandledrejection",function(event){
+    const reason=event.reason;
+    showFatal(reason&&reason.message?reason.message:String(reason||"An asynchronous task failed."));
+  });
+})();
 /* Lightweight original audio: no downloads, external tracks, or copyrighted samples. */
 const audioPrefs={sfx:true,music:false,volume:0.35};
 let audioCtx=null,masterGain=null,musicTimer=null,musicNodes=[],musicStep=0;
