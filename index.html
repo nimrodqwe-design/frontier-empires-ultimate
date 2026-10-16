@@ -186,41 +186,67 @@ function adjacentIds(id){const row=Math.floor(id/4),col=id%4;const out=[];if(col
 function rivalInvasion(){const threatened=state.territories.filter(t=>t.owner==="player"&&t.id!==0&&adjacentIds(t.id).some(id=>state.territories[id]&&state.territories[id].owner==="rival"));if(!threatened.length)return;const target=threatened[Math.floor(Math.random()*threatened.length)];const enemies=adjacentIds(target.id).map(id=>state.territories[id]).filter(t=>t&&t.owner==="rival"&&!((state.treaties||{})[t.ruler]&&(state.treaties||{})[t.ruler].until>=state.day));const attacker=enemies.sort((a,b)=>b.power-a.power)[0];if(!attacker)return;const attack=attacker.power+Math.floor(state.day/4);const defence=8+(target.castleLevel||0)*8+(target.id===0?state.fort*5:0);if(defence>=attack){state.gold=Math.max(0,state.gold-35);log((attacker.ruler||"A rival lord")+" raided "+target.name+", but its defences held. Repairs cost 35 gold.");}else{target.owner="rival";target.ruler=attacker.ruler||"A rival lord";target.power=Math.max(8,Math.floor(attack/2));target.castleLevel=0;log((attacker.ruler||"A rival lord")+" invaded and seized "+target.name+"! Retake it before the rival grows stronger.");notify("⚠ "+target.name+" has fallen to a rival invasion!");}}
 function offerTruce(ruler){if(!ruler)return;if(state.gold<150){notify("You need 150 gold to offer a truce.");return}state.gold-=150;state.treaties=state.treaties||{};state.treaties[ruler]={type:"truce",until:state.day+3};log(ruler+" accepted a three-day truce after receiving 150 gold.");render();saveGame(true);notify("Truce agreed with "+ruler+" for three days.")}
 function offerAlliance(ruler){if(!ruler)return;if(state.gold<300){notify("You need 300 gold to propose an alliance.");return}state.gold-=300;state.treaties=state.treaties||{};state.treaties[ruler]={type:"alliance",until:state.day+5};log(ruler+" agreed to a five-day non-aggression alliance for 300 gold.");render();saveGame(true);notify("Alliance with "+ruler+" lasts five days.")}
+function rivalTargetValue(t,holdings){
+ // Houses value rich farms, trade routes and mines, but avoid costly fortified targets.
+ const closeness=holdings.some(h=>adjacentIds(h.id).includes(t.id))?18:0;
+ const strategic={Capital:35,"Trade route":24,Mine:22,Farmland:19,Crossing:18,Coast:12,Forest:11,Highlands:10,Marsh:8,Valley:13,Lowlands:10}[t.kind]||8;
+ return strategic+Math.min(24,t.income*.09)+Math.min(18,t.food*.08)+closeness-(t.power||0)*1.15-(t.castleLevel||0)*8;
+}
 function rivalExpansion(){
  const rulers=[...new Set(state.territories.filter(t=>t.owner==="rival").map(t=>t.ruler||"House Thorn"))];
  for(const ruler of rulers){
-  const holdings=state.territories.filter(t=>t.owner==="rival"&&t.ruler===ruler);
+  const holdings=state.territories.filter(t=>t.owner==="rival"&&(t.ruler||"House Thorn")===ruler);
   if(!holdings.length)continue;
   const tr=(state.treaties||{})[ruler];if(tr&&tr.until>=state.day)continue;
   const options=[...new Set(holdings.flatMap(t=>adjacentIds(t.id)))].map(id=>state.territories[id]).filter(t=>t&&t.owner==="neutral");
-  if(options.length){options.sort((a,b)=>a.power-b.power);const target=options[0];if(Math.random()<.38){target.owner="rival";target.ruler=ruler;target.power=Math.max(5,Math.floor(target.power*.75));log(ruler+" claimed "+target.name+" after a frontier skirmish.");}}
+  if(!options.length)continue;
+  options.sort((a,b)=>rivalTargetValue(b,holdings)-rivalTargetValue(a,holdings));
+  const target=options[0];
+  const chance=Math.max(.18,Math.min(.72,.32+(rivalTargetValue(target,holdings)+10)/100));
+  if(Math.random()<chance){
+   target.owner="rival";target.ruler=ruler;target.power=Math.max(5,Math.floor(target.power*.75));
+   log(ruler+" secured "+target.name+", a strategic frontier holding worth "+target.income+" gold and "+target.food+" food per day.");
+  }
  }
 }
 function rivalKingdomWars(){
- // Rival houses can now fight for territory, not just expand into empty land.
+ // Rival houses evaluate border targets, castle defences and economic value before committing.
  const houses=[...new Set(state.territories.filter(t=>t.owner==="rival").map(t=>t.ruler||"House Thorn"))];
  if(houses.length<2)return;
- const fronts=[];
+ const candidates=[];
  for(const a of state.territories.filter(t=>t.owner==="rival")){
-  for(const id of adjacentIds(a.id)){const b=state.territories[id];if(b&&b.owner==="rival"&&(b.ruler||"House Thorn")!==(a.ruler||"House Thorn"))fronts.push({a,b});}
+  const rulerA=a.ruler||"House Thorn",trA=(state.treaties||{})[rulerA];
+  if(trA&&trA.until>=state.day)continue;
+  for(const id of adjacentIds(a.id)){
+   const b=state.territories[id];if(!b||b.owner!=="rival"||(b.ruler||"House Thorn")===rulerA)continue;
+   const rulerB=b.ruler||"House Thorn",trB=(state.treaties||{})[rulerB];
+   if(trB&&trB.until>=state.day)continue;
+   const holdingsA=state.territories.filter(t=>t.owner==="rival"&&(t.ruler||"House Thorn")===rulerA);
+   const holdingsB=state.territories.filter(t=>t.owner==="rival"&&(t.ruler||"House Thorn")===rulerB);
+   const attack=Math.max(1,a.power+Math.floor(state.day/5)+(a.castleLevel||0)*2);
+   const defence=Math.max(1,b.power+(b.castleLevel||0)*7+3);
+   const value=rivalTargetValue(b,holdingsA);
+   const advantage=attack/defence;
+   // Avoid unwinnable attacks; strategic prizes can justify a close fight.
+   const score=value+Math.min(30,(advantage-1)*35)+Math.min(12,holdingsB.length*2);
+   if(advantage>=.72)candidates.push({a,b,rulerA,rulerB,attack,defence,value,score,advantage});
+  }
  }
- if(!fronts.length)return;
- // Resolve one border clash per campaign turn; avoid repeatedly resolving the same pair.
- const front=fronts[Math.floor(Math.random()*fronts.length)],a=front.a,b=front.b;
- const rulerA=a.ruler||"House Thorn",rulerB=b.ruler||"House Thorn";
- const trA=(state.treaties||{})[rulerA],trB=(state.treaties||{})[rulerB];
- if((trA&&trA.until>=state.day)||(trB&&trB.until>=state.day))return;
- const powerA=Math.max(1,a.power+Math.floor(state.day/5)+(a.castleLevel||0)*4);
- const powerB=Math.max(1,b.power+Math.floor(state.day/5)+(b.castleLevel||0)*4);
- const scoreA=powerA*(.75+Math.random()*.5),scoreB=powerB*(.75+Math.random()*.5);
+ if(!candidates.length)return;
+ candidates.sort((a,b)=>b.score-a.score);
+ // Small randomness prevents houses from behaving in exactly the same way every campaign.
+ const front=candidates[Math.floor(Math.random()*Math.min(3,candidates.length))];
+ const {a,b,rulerA,rulerB,attack,defence,value}=front;
+ const scoreA=attack*(.82+Math.random()*.36),scoreB=defence*(.82+Math.random()*.36);
  const winner=scoreA>=scoreB?a:b,loser=winner===a?b:a;
- loser.power=Math.max(3,Math.floor(loser.power*.72));
- winner.power=Math.max(4,Math.floor(winner.power*.92));
- if(loser.power<=5&&Math.random()<.42){
-  loser.ruler=winner.ruler;loser.power=Math.max(6,Math.floor(winner.power*.45));loser.castleLevel=Math.max(0,(loser.castleLevel||0)-1);
-  log(winner.ruler+" defeated "+rulerB+" at "+loser.name+" and seized the territory. Rival borders are shifting.");
+ const winnerRuler=winner===a?rulerA:rulerB,loserRuler=loser===a?rulerA:rulerB;
+ loser.power=Math.max(3,Math.floor(loser.power*(winner===a?.68:.78)));
+ winner.power=Math.max(4,Math.floor(winner.power*.9));
+ if(loser.power<=7&&Math.random()<(winner===a?.48:.28)){
+  loser.ruler=winnerRuler;loser.power=Math.max(6,Math.floor(winner.power*.42));loser.castleLevel=Math.max(0,(loser.castleLevel||0)-1);
+  log(winnerRuler+" captured "+loser.name+" from "+loserRuler+" after a border war. The victor gains a strategic holding worth "+loser.income+" gold per day.");
  }else{
-  log(winner.ruler+" won a border battle against "+loser.ruler+" near "+loser.name+". Both houses suffered losses.");
+  log(winnerRuler+" defeated "+loserRuler+" near "+loser.name+". "+(winner===a?rulerA+" pushed the attack.":"The defenders held their ground.")+" Both houses lost strength.");
  }
 }
 function nextDay(){playSfx("day");state.day++;const g=income();const f=foodIncome();const upkeep=Math.ceil(totalArmy()*1.25);state.gold+=g;state.food+=f-upkeep;if(state.food<0){state.food=0;const lost=Math.min(state.footmen,Math.ceil(totalArmy()*.08));state.footmen-=lost;log("Food stores ran dry. "+lost+" footmen deserted.");}if(state.day%4===0){rivalInvasion()}if(state.day%3===0){rivalKingdomWars()}if(state.day%5===0){const rivals=state.territories.filter(t=>t.owner==="rival");if(rivals.length){const t=rivals[Math.floor(Math.random()*rivals.length)];t.power=Math.min(35,t.power+2);log((t.ruler||"Rival forces")+" recruited reinforcements near "+t.name+".");}rivalExpansion();}log("Day "+state.day+": collected "+g+" gold and "+f+" food before army upkeep.");render();saveGame(true);notify("Day "+state.day+" begins. Income collected.")}
